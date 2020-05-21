@@ -29,19 +29,33 @@ func scrape(url string) *goquery.Document {
 	return doc
 }
 
-func GetMonsterDetails(name string) Monster {
+func GetMonsterDetails(name string) *Monster {
 	monsterDetailLink := "https://www.aonprd.com/MonsterDisplay.aspx?ItemName=" + url.QueryEscape(name)
 	doc := scrape(monsterDetailLink)
 
+	var raw string
+
 	doc.Find("table span").Each(func(i int, s *goquery.Selection) {
-		// TODO:
-		// s.Find("b").Map(func(i int, s *goquery.Selection) string {
-		// 	//
+		raw = s.Text()
+
+		// Key-value pairs look like the following, making them difficult to parse.
+		// Note that values are not nested in any containing DOM node.
+		//
+		// <b>title</b>
+		// value
+		// <br>
+
+		// TODO: need custom Matcher?
+		// valueStrings := s.Find("b").Map(func(i int, s *goquery.Selection) string {
+		// 	title := s.Text()
+
+		// 	// value?
+
+		// 	return title
 		// })
-		// fmt.Println(s.Text())
 	})
 
-	return Monster{}
+	return &Monster{RawText: raw}
 }
 
 func GetMonsterNames() []string {
