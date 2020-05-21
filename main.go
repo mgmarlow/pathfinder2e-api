@@ -5,9 +5,12 @@ import (
 )
 
 func main() {
-	monsterLinks := GetMonsterLinks()
-	for _, link := range monsterLinks {
-		fmt.Println("Following ", link)
-		// monsterDetails := getMonsterDetails("https://www.aonprd.com/" + link)
-	}
+	monsterNames := GetMonsterNames()
+	fmt.Println("Following ", monsterNames[0])
+	GetMonsterDetails(monsterNames[0])
+
+	// for _, link := range monsterLinks {
+	// 	fmt.Println("Following ", link)
+	// 	monsterDetails := GetMonsterDetails(link)
+	// }
 }

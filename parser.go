@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -27,18 +29,29 @@ func scrape(url string) *goquery.Document {
 	return doc
 }
 
-func GetMonsterDetails(url string) Monster {
+func GetMonsterDetails(name string) Monster {
+	monsterDetailLink := "https://www.aonprd.com/MonsterDisplay.aspx?ItemName=" + url.QueryEscape(name)
+	doc := scrape(monsterDetailLink)
+
+	doc.Find("table span").Each(func(i int, s *goquery.Selection) {
+		// TODO:
+		// s.Find("b").Map(func(i int, s *goquery.Selection) string {
+		// 	//
+		// })
+		// fmt.Println(s.Text())
+	})
+
 	return Monster{}
 }
 
-func GetMonsterLinks() []string {
+func GetMonsterNames() []string {
 	doc := scrape("https://www.aonprd.com/Monsters.aspx?Letter=All")
 
 	return doc.Find("#main table td a").Map(func(i int, s *goquery.Selection) string {
 		link, exists := s.Attr("href")
 
 		if exists {
-			return link
+			return strings.Split(link, "ItemName=")[1]
 		}
 
 		return ""
