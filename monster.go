@@ -1,5 +1,5 @@
 package main
 
 type Monster struct {
-	RawText string
+	RawHtml string
 }
