@@ -32,21 +32,23 @@ func scrape(url string) *goquery.Document {
 	return doc
 }
 
-func GetMonsterDetails(name string) *Monster {
+func GetMonsterDetails(name string) map[string]string {
 	monsterDetailLink := "https://www.aonprd.com/MonsterDisplay.aspx?ItemName=" + url.QueryEscape(name)
 	doc := scrape(monsterDetailLink)
 
-	// var raw string
-	// var valueStrings []string
+	m := make(map[string]string)
+
+	var keys []string
+	var values []string
 
 	doc.Find("table span").Each(func(i int, s *goquery.Selection) {
-		rawHtml, err := s.Html()
+		rawHTML, err := s.Html()
 		if err != nil {
 			fmt.Println("Error retrieving HTML for: " + monsterDetailLink)
 			return
 		}
 
-		doc, err := html.Parse(strings.NewReader(rawHtml))
+		doc, err := html.Parse(strings.NewReader(rawHTML))
 		if err != nil {
 			fmt.Println("Error parsing HTML for: " + monsterDetailLink)
 			return
@@ -58,22 +60,18 @@ func GetMonsterDetails(name string) *Monster {
 		// <b>title</b>
 		// value
 		// <br>
-
 		var f func(*html.Node)
 		f = func(n *html.Node) {
 			if n.Type == html.TextNode {
-				// for _, a := range n.Parent.Attr {
-				// 	fmt.Println("parent val: ", a.Val)
-				// }
-
 				if n.Parent.Data == "b" {
-					// TODO: add n.Data to keys
-					fmt.Println(n.Data)
+					keys = append(keys, n.Data)
 				}
 
-				if n.Parent.Data == "body" {
-					// TODO: add to values
-					fmt.Println(n.Data)
+				// TODO: need a way of collecting node values
+				// if n.Parent.Data == "a" { }
+
+				if n.Parent.Data == "body" && n.Data[0] == ' ' {
+					values = append(values, n.Data[1:])
 				}
 			}
 
@@ -86,7 +84,11 @@ func GetMonsterDetails(name string) *Monster {
 
 	})
 
-	return &Monster{}
+	for i, key := range keys {
+		m[key] = values[i]
+	}
+
+	return m
 }
 
 func GetMonsterNames() []string {
