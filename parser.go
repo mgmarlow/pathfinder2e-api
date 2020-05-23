@@ -32,6 +32,22 @@ func scrape(url string) *goquery.Document {
 	return doc
 }
 
+func stripExtraChars(original string) string {
+	value := strings.Trim(original, " ")
+
+	if len(value) <= 0 {
+		return value
+	}
+
+	lastChar := value[len(value)-1:]
+	if lastChar == ";" || lastChar == "," {
+		return value[:len(value)-1]
+	}
+
+	return value
+}
+
+// GetMonsterDetails returns key-value pairs of the attributes for a given monster.
 func GetMonsterDetails(name string) map[string]string {
 	monsterDetailLink := "https://www.aonprd.com/MonsterDisplay.aspx?ItemName=" + url.QueryEscape(name)
 	doc := scrape(monsterDetailLink)
@@ -71,7 +87,8 @@ func GetMonsterDetails(name string) map[string]string {
 				// if n.Parent.Data == "a" { }
 
 				if n.Parent.Data == "body" && n.Data[0] == ' ' {
-					values = append(values, n.Data[1:])
+					value := stripExtraChars(n.Data)
+					values = append(values, value)
 				}
 			}
 
@@ -81,7 +98,6 @@ func GetMonsterDetails(name string) map[string]string {
 		}
 
 		f(doc)
-
 	})
 
 	for i, key := range keys {
@@ -91,6 +107,7 @@ func GetMonsterDetails(name string) map[string]string {
 	return m
 }
 
+// GetMonsterNames returns a list of all monsters in the bestiary.
 func GetMonsterNames() []string {
 	doc := scrape("https://www.aonprd.com/Monsters.aspx?Letter=All")
 
