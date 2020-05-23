@@ -6,6 +6,48 @@ import (
 	"github.com/jarcoal/httpmock"
 )
 
+func TestGetMonsterNames(t *testing.T) {
+	t.Run("it should call aonprd GET monsters", func(t *testing.T) {
+		httpmock.Activate()
+		defer httpmock.DeactivateAndReset()
+
+		url := "https://www.aonprd.com/Monsters.aspx?Letter=All"
+		httpmock.RegisterResponder("GET", url, httpmock.NewStringResponder(200, ""))
+
+		GetMonsterNames()
+
+		if httpmock.GetTotalCallCount() != 1 {
+			t.Errorf("expected %v to be called once", url)
+		}
+	})
+
+	t.Run("it should return monster names from table", func(t *testing.T) {
+		httpmock.Activate()
+		defer httpmock.DeactivateAndReset()
+
+		url := "https://www.aonprd.com/Monsters.aspx?Letter=All"
+		mockHTML := "<div id=\"main\"><table><tbody>" +
+			"<tr><td><a href=\"MonsterDisplay.aspx?ItemName=Foo Bar\">Foo Bar</a></td><td>8</td></tr>" +
+			"<tr><td><a href=\"MonsterDisplay.aspx?ItemName=BazBar Foo\">BazBar Foo</a></td><td>20</td></tr>" +
+			"</tbody></table></div>"
+		httpmock.RegisterResponder("GET", url, httpmock.NewStringResponder(200, mockHTML))
+
+		names := GetMonsterNames()
+
+		if len(names) != 2 {
+			t.Errorf("got %v wanted %v", len(names), 2)
+		}
+
+		if names[0] != "Foo Bar" {
+			t.Errorf("got %v wanted %v", names[0], "Foo Bar")
+		}
+
+		if names[1] != "BazBar Foo" {
+			t.Errorf("got %v wanted %v", names[1], "BazBar Foo")
+		}
+	})
+}
+
 func TestGetMonsterDetails(t *testing.T) {
 	checkKeyValuePair := func(t *testing.T, gotKey string, wanted string) {
 		t.Helper()
