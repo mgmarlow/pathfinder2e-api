@@ -31,6 +31,7 @@ type Monster struct {
 func NewMonster(name string, pairs map[string]string) (*Monster, error) {
 	var err error
 	monster := new(Monster)
+
 	monster.Name = name
 	monster.Initiative = pairs["Init"]
 	monster.Senses = pairs["Senses"]
