@@ -1,5 +1,5 @@
 build:
-	go build -o bin/main.exe main.go parser.go monster.go
+	go build -o bin/upserter.exe cmd/upserter/main.go
 
 run:
-	go run main.go parser.go monster.go
+	go run cmd/upserter/main.go src/parser.go src/monster.go

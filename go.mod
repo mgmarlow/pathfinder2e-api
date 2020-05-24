@@ -1,4 +1,4 @@
-module github.com/mgmarlow/aon-scraper
+module github.com/mgmarlow/pathfinder2e-api
 
 go 1.13
 

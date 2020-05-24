@@ -1,40 +1,16 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
 	_ "github.com/lib/pq"
-
-	"github.com/joho/godotenv"
+	"github.com/mgmarlow/pathfinder2e-api/pkg/api"
 )
 
-var Db *sql.DB
-
-func init() {
-	var err error
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	connStr := fmt.Sprintf(
-		"user=%s dbname=%s password=%s sslmode=disable",
-		os.Getenv("PG_USER"),
-		os.Getenv("PG_DB"),
-		os.Getenv("PG_PASS"))
-
-	Db, err = sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func createMonster(name string) (*Monster, error) {
-	details := GetMonsterDetails(name)
-	monster, err := NewMonster(name, details)
+func createMonster(name string) (*api.Monster, error) {
+	details := api.GetMonsterDetails(name)
+	monster, err := api.NewMonster(name, details)
 
 	if err != nil {
 		fmt.Println("error creating monster ", name)
@@ -46,7 +22,8 @@ func createMonster(name string) (*Monster, error) {
 }
 
 func main() {
-	monsterNames := GetMonsterNames()
+	monsterNames := api.GetMonsterNames()
+	// TODO: goroutine this
 	fmt.Println("Scraping ", monsterNames[0])
 	monster, err := createMonster(monsterNames[0])
 	if err != nil {

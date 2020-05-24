@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"fmt"
@@ -101,6 +101,7 @@ func GetMonsterDetails(name string) map[string]string {
 	})
 
 	for i, key := range keys {
+		fmt.Println(key, ": ", values[i])
 		m[key] = values[i]
 	}
 

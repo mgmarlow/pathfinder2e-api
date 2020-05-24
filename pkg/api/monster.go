@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"strconv"
@@ -57,6 +57,7 @@ func NewMonster(name string, pairs map[string]string) (*Monster, error) {
 	return monster, nil
 }
 
+// TODO: batch this
 // Create adds a monster to the database.
 func (m *Monster) Create() error {
 	statement := "insert into beasts (name, xp) values ($1, $2) returning id;"
