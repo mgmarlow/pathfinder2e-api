@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -16,7 +15,6 @@ type Monster struct {
 	Senses       string
 	AC           string
 	HP           string
-	Saves        string
 	Strength     int
 	Dexterity    int
 	Constitution int
@@ -38,7 +36,6 @@ func NewMonster(name string, pairs map[string]string) (*Monster, error) {
 	monster.Senses = pairs["Senses"]
 	monster.HP = pairs["hp"]
 	monster.AC = pairs["AC"]
-	monster.Saves = fmt.Sprintf("Fort: %s, Ref: %s, Will: %s", pairs["Fort"], pairs["Ref"], pairs["Will"])
 	monster.Bab = pairs["Base Atk"]
 	monster.CMB = pairs["CMB"]
 

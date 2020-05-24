@@ -9,7 +9,6 @@ CREATE TABLE beasts (
   -- senses VARCHAR(50),
   -- ac VARCHAR(50),
   -- hp VARCHAR(50),
-  -- saves VARCHAR(200),
   -- strength int NOT NULL,
   -- dexterity int NOT NULL,
   -- constitution int NOT NULL,
