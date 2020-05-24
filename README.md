@@ -1,6 +1,8 @@
-## Run the scraper
+# Pathfinder2e API
+
+## Upserter
 
 ```
-make build
-./bin/main.exe
+make
+./bin/upserter.exe
 ```
