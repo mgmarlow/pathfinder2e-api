@@ -6,10 +6,11 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/mgmarlow/pathfinder2e-api/pkg/api"
+	"github.com/mgmarlow/pathfinder2e-api/pkg/scraper"
 )
 
 func createMonster(name string) (*api.Monster, error) {
-	details := api.GetMonsterDetails(name)
+	details := scraper.GetMonsterDetails(name)
 	monster, err := api.NewMonster(name, details)
 
 	if err != nil {
@@ -22,7 +23,7 @@ func createMonster(name string) (*api.Monster, error) {
 }
 
 func main() {
-	monsterNames := api.GetMonsterNames()
+	monsterNames := scraper.GetMonsterNames()
 	// TODO: goroutine this
 	fmt.Println("Scraping ", monsterNames[0])
 	monster, err := createMonster(monsterNames[0])
