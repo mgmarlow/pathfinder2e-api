@@ -1,8 +1,11 @@
 package api
 
 import (
+	"log"
 	"strconv"
 	"strings"
+
+	"github.com/lib/pq"
 )
 
 // Monster is an entity in the Pathfinder 2e Bestiary.
@@ -57,18 +60,43 @@ func NewMonster(name string, pairs map[string]string) (*Monster, error) {
 	return monster, nil
 }
 
-// TODO: batch this
-// Create adds a monster to the database.
-func (m *Monster) Create() error {
-	statement := "insert into beasts (name, xp) values ($1, $2) returning id;"
-	stmt, err := Db.Prepare(statement)
+// CopyMonsters adds monsters to the database.
+func CopyMonsters(monsters []*Monster) error {
+	txn, err := Db.Begin()
 	if err != nil {
 		return err
 	}
 
-	defer stmt.Close()
+	stmt, err := txn.Prepare(pq.CopyIn("beasts", "name", "xp", "initiative", "ac", "hp"))
 
-	err = stmt.QueryRow(&m.Name, &m.XP).Scan(&m.ID)
+	if err != nil {
+		return err
+	}
+
+	for _, monster := range monsters {
+		_, err = stmt.Exec(
+			monster.Name,
+			monster.XP,
+			monster.Initiative,
+			monster.AC,
+			monster.HP)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	_, err = stmt.Exec()
+	if err != nil {
+		return err
+	}
+
+	err = stmt.Close()
+	if err != nil {
+		return err
+	}
+
+	err = txn.Commit()
 	if err != nil {
 		return err
 	}

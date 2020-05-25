@@ -9,7 +9,7 @@ import (
 	"github.com/mgmarlow/pathfinder2e-api/pkg/scraper"
 )
 
-func createMonster(name string) (*api.Monster, error) {
+func getMonster(name string) (*api.Monster, error) {
 	details := scraper.GetMonsterDetails(name)
 	monster, err := api.NewMonster(name, details)
 
@@ -24,23 +24,28 @@ func createMonster(name string) (*api.Monster, error) {
 
 func main() {
 	monsterNames := scraper.GetMonsterNames()
-	// TODO: goroutine this
-	fmt.Println("Scraping ", monsterNames[0])
-	monster, err := createMonster(monsterNames[0])
-	if err != nil {
-		log.Fatal(err)
+	monsters := make([]*api.Monster, len(monsterNames))
+
+	for i, name := range monsterNames {
+		fmt.Println("Scraping", name, "...")
+
+		monster, err := getMonster(name)
+		if err != nil {
+			fmt.Println("Could not create", name)
+			continue
+		}
+
+		monsters[i] = monster
 	}
 
-	fmt.Println("Upserting ", monsterNames[0])
-	err = monster.Create()
+	fmt.Println("Done scraping.")
+
+	fmt.Println("Upserting...")
+
+	err := api.CopyMonsters(monsters)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("All done.")
-
-	// for _, link := range monsterLinks {
-	// 	fmt.Println("Following ", link)
-	// 	monsterDetails := GetMonsterDetails(link)
-	// }
 }

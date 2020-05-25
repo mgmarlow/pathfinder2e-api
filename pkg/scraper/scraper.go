@@ -109,7 +109,8 @@ func GetMonsterDetails(name string) map[string]string {
 
 // GetMonsterNames returns a list of all monsters in the bestiary.
 func GetMonsterNames() []string {
-	doc := scrape("https://www.aonprd.com/Monsters.aspx?Letter=All")
+	// doc := scrape("https://www.aonprd.com/Monsters.aspx?Letter=All")
+	doc := scrape("https://www.aonprd.com/Monsters.aspx?Letter=Z")
 
 	return doc.Find("#main table td a").Map(func(i int, s *goquery.Selection) string {
 		link, exists := s.Attr("href")
